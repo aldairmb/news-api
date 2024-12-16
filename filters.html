@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News API Filters Form</title>
+  <script src="scripts/filters.js" defer></script>
+  <link href="styles/filters.css" rel="stylesheet" >
+
+</head>
+<body>
+  <h3>Filter News Articles</h1>
+
+  <form id="news-filters">
+    <!-- Category Filter -->
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+      <option value="">Select Category</option>
+      <option value="business">Business</option>
+      <option value="entertainment">Entertainment</option>
+      <option value="general">General</option>
+      <option value="health">Health</option>
+      <option value="science">Science</option>
+      <option value="sports">Sports</option>
+      <option value="technology">Technology</option>
+    </select>
+    <br><br>
+
+    <!-- Source Filter -->
+    <label for="source">Source:</label>
+    <select id="source" name="source">
+      <option value="">Select Source</option>
+      <option value="bbc-news">BBC News</option>
+      <option value="nbc-news">NBC News</option>
+      <option value="fox-news">Fox News</option>
+      <option value="time">Time</option>
+      <option value="politico">Politico</option>
+      <option value="associated-press">Associated Press</option>
+      <option value="the-washington-post">The Washington Post</option>
+      <option value="al-jazeera-english">Al Jazeera</option>
+      <option value="bloomberg">Bloomberg</option>
+      <option value="mashable">Mashable</option>
+      <option value="the-verge">The Verge</option>
+      <option value="espn">ESPN</option>
+      <option value="fortune">Fortune</option>
+    </select>
+    <br><br>
+
+    <!-- Keyword Filter -->
+    <label for="keyword-filter">Keyword Search (e.g., Musk, NBA):</label>
+    <input type="text" id="keyword-filter" name="keyword-filter" placeholder="Enter a keyword">
+    <br><br>
+
+    <!-- Submit Button -->
+    <button type="submit">Get News</button>
+  </form>
+  <div>
+    <ul id="articles-list"></ul>
+  </div>
+  
+</body>
+</html>

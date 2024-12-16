@@ -1,0 +1,85 @@
+  /* Hamburger */
+.hamburger {
+    font-size: 30px;
+    color: black;
+    padding: 10px;
+    position: flexible;
+    top: 20px;
+    left: 10px;
+  }
+
+#side-hamburger {
+  margin-left: 85%;
+  margin-top: -15px;
+}
+
+  /* Side menu */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -110vw;
+    height: 100%;
+    width: 300px;
+    background-color: #f9f9f9;
+    overflow-y: auto;
+    transition: left 0.6s ease;
+    padding: 20px;
+    z-index: 2;
+}
+
+#articles-list {
+  margin-top: 20px;
+  padding: 0;
+  margin: 10px;
+  list-style-type: none;
+}
+
+#articles-list li {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f4f4f4;
+}
+
+  /* When menu is open */
+.side-menu.open {
+    left: 0;
+}
+
+  /* Dropdown styling */
+.side-menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.side-menu ul li {
+    margin-bottom: 15px;
+}
+
+.side-menu .dropdown-content {
+    display: block;
+    margin-top: 10px;
+}
+
+#news-filters {
+    display: flex;
+    flex-direction: column;
+}
+
+#news-filters label {
+    margin-bottom: 5px;
+}
+
+#news-filters select, #news-filters input {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+#news-filters button {
+    padding: 5px 10px;
+}
+
+#theme {
+  padding: 5px;
+}

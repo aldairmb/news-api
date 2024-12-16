@@ -1,0 +1,69 @@
+/* Define default theme colors (for example, Theme 1) */
+:root {
+    --background-color: white;
+    --box-color: black;
+    --text-color: white;
+  }
+  
+  /* Theme 2 */
+  .theme-2 {
+    --background-color: #white;
+    --box-color: #6E44FF;
+    --text-color: white;
+  }
+  
+  /* Theme 3 */
+  .theme-3 {
+    --background-color: white;
+    --box-color: #F26A8D;
+    --text-color: #ecf0f1;
+  }
+  
+  /* Theme 4 */
+  .theme-4 {
+    --background-color: white;
+    --box-color: #16a085;
+    --text-color: #3C1642;
+  }
+  
+  /* Theme 5 */
+  .theme-5 {
+    --background-color: black;
+    --box-color: #FF01FB;
+    --text-color: white;
+  }
+  
+  /* Theme 6 */
+  .theme-6 {
+    --background-color: black;
+    --box-color: #FF1791;
+    --text-color: white;
+  }
+
+   /* Theme 6 */
+   .theme-6 {
+    --background-color: black;
+    --box-color: #FF1791;
+    --text-color: white;
+  }
+
+    /* Theme 7 */
+    .theme-7 {
+        --background-color: black;
+        --box-color: #1DD3B0;
+        --text-color: white;
+      }
+  
+
+  body {
+    background-color: var(--background-color);
+  }
+  
+  .box{
+    background-color: var(--box-color);
+    color: var(--text-color);
+  }
+
+  .hamburger {
+    color: var(--box-color);
+  }
