@@ -2,21 +2,21 @@
 :root {
     --background-color: white;
     --box-color: black;
-    --text-color: white;
+    --text-color: black;
   }
   
   /* Theme 2 */
   .theme-2 {
     --background-color: #white;
     --box-color: #6E44FF;
-    --text-color: white;
+    --text-color: black;
   }
   
   /* Theme 3 */
   .theme-3 {
     --background-color: white;
     --box-color: #F26A8D;
-    --text-color: #ecf0f1;
+    --text-color: black;
   }
   
   /* Theme 4 */
@@ -64,10 +64,18 @@
     color: var(--text-color);
   }
 
-  .hamburger {
+  .h2{
+    color: white;
+  }
+
+  .hamburger, h1 {
     color: var(--box-color);
   }
 
   #articles-list {
     color: black;
+  }
+
+  h1 {
+    color: var(--text-color);
   }
