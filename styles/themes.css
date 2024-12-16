@@ -67,3 +67,7 @@
   .hamburger {
     color: var(--box-color);
   }
+
+  #articles-list {
+    color: black;
+  }
