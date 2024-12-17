@@ -1,107 +1,150 @@
-const apiKey = 'b9b25782075944c282a534210d4027eb';
+document.addEventListener('DOMContentLoaded', function () {
+  const savedSections = JSON.parse(localStorage.getItem('savedSections')) || {};
+  const savedFilters = JSON.parse(localStorage.getItem('savedFilters')) || {};
 
-// Function to disable other filters
-function disableOtherFilters(selectedFilter) {
-  const categorySelect = document.getElementById('category');
-  const sourceSelect = document.getElementById('source');
-  const keywordInput = document.getElementById('keyword-filter');
+  // Restore saved sections and filters
+  Object.keys(savedSections).forEach(sectionId => {
+    const sectionElement = document.getElementById(sectionId);
+    if (sectionElement) {
+      const h2 = document.createElement('h2');
+      h2.textContent = capitalizeFirstLetter(savedSections[sectionId]);
+      sectionElement.innerHTML = ''; // Clear existing content
+      sectionElement.appendChild(h2);
 
-  // Disable other filters based on the selected one
-  if (selectedFilter === 'category') {
-    sourceSelect.disabled = true;
-    keywordInput.disabled = true;
-  } else if (selectedFilter === 'source') {
-    categorySelect.disabled = true;
-    keywordInput.disabled = true;
-  } else if (selectedFilter === 'keyword') {
-    categorySelect.disabled = true;
-    sourceSelect.disabled = true;
-  }
-}
-
-// Function to enable all filters
-function enableAllFilters() {
-  const categorySelect = document.getElementById('category');
-  const sourceSelect = document.getElementById('source');
-  const keywordInput = document.getElementById('keyword-filter');
-
-  categorySelect.disabled = false;
-  sourceSelect.disabled = false;
-  keywordInput.disabled = false;
-}
-
-document.getElementById('news-filters').addEventListener('submit', async function(event) {
-  event.preventDefault();
-
-  // Collect the selected filter values
-  const category = document.getElementById('category').value;
-  const source = document.getElementById('source').value;
-  const keyword = document.getElementById('keyword-filter').value.trim();
-  const section = document.getElementById('section').value;
-
-  // Prepare the API URL
-  let url = `https://newsapi.org/v2/top-headlines?apiKey=${apiKey}`;
-
-  if (category && !keyword) {
-    url += `&category=${category}`;
-  } else if (source && !keyword) {
-    url += `&sources=${source}`;
-  }
-
-  if (keyword) {
-    url += `&q=${encodeURIComponent(keyword)}`;
-  }
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const articlesList = document.getElementById('articles-list');
-    articlesList.innerHTML = ''; // Clear previous results
-
-    if (data.status === 'ok' && data.articles.length > 0) {
-      data.articles.slice(0, 10).forEach(article => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `
-          <strong>Title:</strong> ${article.title} <br>
-          <strong>Author:</strong> ${article.author || 'Unknown'} <br>
-          <strong>Description:</strong> ${article.description || 'No description available.'} <br>
-          <strong>Source:</strong> ${article.source.name} <br>
-          <strong>URL:</strong> <a href="${article.url}" target="_blank">Read more</a><br>
-          <img src="${article.urlToImage}" alt="Image" style="width:100px;">
-          <hr>
-        `;
-        articlesList.appendChild(listItem);
-      });
-    } else {
-      articlesList.innerHTML = '<li>No articles found for the selected filters.</li>';
+      // Add "Fetch Articles" button
+      const fetchButton = createFetchButton(sectionId, savedFilters[sectionId]);
+      sectionElement.appendChild(fetchButton);
     }
-  } catch (error) {
-    console.error('Error fetching articles:', error);
-  }
-});
+  });
 
-// Handle changes to the category, source, and keyword filters
-document.getElementById('category').addEventListener('change', function() {
-  if (this.value !== "") {
-    disableOtherFilters('category');
-  } else {
-    enableAllFilters();
-  }
-});
+  // Form handling
+  const form = document.getElementById('news-filters');
+  const categoryInput = document.getElementById('category');
+  const sourceInput = document.getElementById('source');
+  const keywordInput = document.getElementById('keyword-filter');
+  const sectionInput = document.getElementById('section');
 
-document.getElementById('source').addEventListener('change', function() {
-  if (this.value !== "") {
-    disableOtherFilters('source');
-  } else {
-    enableAllFilters();
-  }
-});
+  const toggleInputs = (disabledInputs, condition) => {
+    disabledInputs.forEach(input => {
+      input.disabled = condition;
+    });
+  };
 
-document.getElementById('keyword-filter').addEventListener('input', function() {
-  if (this.value.trim() !== "") {
-    disableOtherFilters('keyword');
-  } else {
-    enableAllFilters();
+  const inputs = [categoryInput, sourceInput, keywordInput];
+
+  // Add event listeners to enforce mutual exclusivity
+  categoryInput.addEventListener('change', () => {
+    toggleInputs([sourceInput, keywordInput], categoryInput.value !== '');
+  });
+
+  sourceInput.addEventListener('change', () => {
+    toggleInputs([categoryInput, keywordInput], sourceInput.value !== '');
+  });
+
+  keywordInput.addEventListener('input', () => {
+    const hasValue = keywordInput.value.trim() !== '';
+    toggleInputs([categoryInput, sourceInput], hasValue);
+  });
+
+  // Clear other inputs when one is selected
+  const clearOtherInputs = (currentInput) => {
+    inputs.forEach(input => {
+      if (input !== currentInput) {
+        input.value = '';
+        input.disabled = false;
+      }
+    });
+  };
+
+  inputs.forEach(input => {
+    input.addEventListener('focus', () => clearOtherInputs(input));
+  });
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const section = sectionInput.value;
+    const category = categoryInput.value;
+    const source = sourceInput.value;
+    const keyword = keywordInput.value.trim();
+
+    if (!section || (!category && !source && !keyword)) {
+      alert('Please select a section and one filter type (category, source, or keyword).');
+      return;
+    }
+
+    const sectionElement = document.getElementById(section);
+    const displayText = capitalizeFirstLetter(category || source || keyword || "Custom Section");
+
+    const h2 = document.createElement('h2');
+    h2.textContent = displayText;
+    sectionElement.innerHTML = ''; // Clear content
+    sectionElement.appendChild(h2);
+
+    // Save filter text in localStorage
+    savedSections[section] = displayText;
+    savedFilters[section] = { category, source, keyword }; // Save filters
+    localStorage.setItem('savedSections', JSON.stringify(savedSections));
+    localStorage.setItem('savedFilters', JSON.stringify(savedFilters));
+
+    // Add "Fetch Articles" button
+    const fetchButton = createFetchButton(section, { category, source, keyword });
+    sectionElement.appendChild(fetchButton);
+  });
+
+  function createFetchButton(sectionId, filters) {
+    const button = document.createElement('button');
+    button.textContent = 'Fetch Articles';
+    button.addEventListener('click', () => fetchArticlesForSection(sectionId, filters));
+    return button;
+  }
+
+  function fetchArticlesForSection(sectionId, filters) {
+    const { category, source, keyword } = filters || {};
+    const sectionElement = document.getElementById(sectionId);
+
+    // Create an articles list
+    const ul = document.createElement('ul');
+    ul.id = 'articles-list';
+    ul.textContent = 'Loading articles...';
+    sectionElement.appendChild(ul);
+
+    const apiKey = 'b9b25782075944c282a534210d4027eb';
+    let url = `https://newsapi.org/v2/top-headlines?apiKey=${apiKey}`;
+    if (category) url += `&category=${category}`;
+    if (source) url += `&sources=${source}`;
+    if (keyword) url += `&q=${encodeURIComponent(keyword)}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        ul.innerHTML = ''; // Clear loading text
+        if (data.status === 'ok' && data.articles.length > 0) {
+          data.articles.forEach(article => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <h3>${article.title}</h3>
+              <p><strong>Author:</strong> ${article.author || 'Unknown'}</p>
+              <p><strong>Description:</strong> ${article.description || 'No description available.'}</p>
+              <p><strong>Source:</strong> ${article.source.name}</p>
+              <a href="${article.url}" target="_blank">Read more</a>
+              <img src="${article.urlToImage}" alt="Image" style="max-width: 100%; height: auto;">
+            `;
+            ul.appendChild(li);
+          });
+        } else {
+          ul.innerHTML = '<li>No articles found for the selected filters.</li>';
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching articles:', error);
+        ul.innerHTML = '<li>There was an error fetching the articles. Please try again later.</li>';
+      });
+  }
+
+  // Helper function to capitalize the first letter
+  function capitalizeFirstLetter(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
 });
