@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
       // Add "Fetch Articles" button
       const fetchButton = createFetchButton(sectionId, savedFilters[sectionId]);
       sectionElement.appendChild(fetchButton);
+      
+      // Add "Close" button
+      const closeButton = createCloseButton(sectionId);
+      sectionElement.appendChild(closeButton);
     }
   });
 
@@ -90,8 +94,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add "Fetch Articles" button
     const fetchButton = createFetchButton(section, { category, source, keyword });
     sectionElement.appendChild(fetchButton);
+
+    // Add "Close" button
+    const closeButton = createCloseButton(section);
+    sectionElement.appendChild(closeButton);
   });
 
+  // Function to create the "Fetch Articles" button
   function createFetchButton(sectionId, filters) {
     const button = document.createElement('button');
     button.textContent = 'Fetch Articles';
@@ -99,6 +108,15 @@ document.addEventListener('DOMContentLoaded', function () {
     return button;
   }
 
+  // Function to create the "Close" button
+  function createCloseButton(sectionId) {
+    const button = document.createElement('button');
+    button.textContent = 'Close';
+    button.addEventListener('click', () => closeSection(sectionId));
+    return button;
+  }
+
+  // Function to fetch articles for a section
   function fetchArticlesForSection(sectionId, filters) {
     const { category, source, keyword } = filters || {};
     const sectionElement = document.getElementById(sectionId);
@@ -166,5 +184,22 @@ document.addEventListener('DOMContentLoaded', function () {
   function capitalizeFirstLetter(text) {
     if (!text) return '';
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  }
+
+  // Function to clear the articles and images but keep the <h2> and button
+  function closeSection(sectionId) {
+    const sectionElement = document.getElementById(sectionId);
+    
+    // Clear the articles (ul)
+    const ul = sectionElement.querySelector('ul');
+    if (ul) {
+      ul.innerHTML = ''; // Clear the articles
+    }
+
+    // Clear the images (photo-rotation)
+    const photoRotation = document.getElementById('photo-rotation');
+    if (photoRotation) {
+      photoRotation.innerHTML = ''; // Clear images
+    }
   }
 });

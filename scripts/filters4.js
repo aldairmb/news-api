@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', function () {
       // Add "Fetch Articles" button
       const fetchButton = createFetchButton(sectionId, savedFilters[sectionId]);
       sectionElement.appendChild(fetchButton);
+      
+      // Add "Close" button
+      const closeButton = createCloseButton(sectionId);
+      sectionElement.appendChild(closeButton);
     }
   });
 
@@ -90,8 +94,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add "Fetch Articles" button
     const fetchButton = createFetchButton(section, { category, source, keyword });
     sectionElement.appendChild(fetchButton);
+
+    // Add "Close" button
+    const closeButton = createCloseButton(section);
+    sectionElement.appendChild(closeButton);
   });
 
+  // Function to create the "Fetch Articles" button
   function createFetchButton(sectionId, filters) {
     const button = document.createElement('button');
     button.textContent = 'Fetch Articles';
@@ -99,15 +108,34 @@ document.addEventListener('DOMContentLoaded', function () {
     return button;
   }
 
+  // Function to create the "Close" button
+  function createCloseButton(sectionId) {
+    const button = document.createElement('button');
+    button.textContent = 'Close';
+    button.addEventListener('click', () => closeSection(sectionId));
+    return button;
+  }
+
+  // Function to fetch articles for a section
   function fetchArticlesForSection(sectionId, filters) {
     const { category, source, keyword } = filters || {};
     const sectionElement = document.getElementById(sectionId);
+
+    // Clear previous articles from #section-articles
+    const articleContainer = document.getElementById('section-articles');
+    articleContainer.innerHTML = ''; // Clear previous articles
+
+    // Clear images (photo rotation)
+    const photoRotation = document.getElementById('photo-rotation');
+    if (photoRotation) {
+      photoRotation.innerHTML = ''; // Clear images
+    }
 
     // Create an articles list
     const ul = document.createElement('ul');
     ul.id = 'articles-list';
     ul.textContent = 'Loading articles...';
-    sectionElement.appendChild(ul);
+    articleContainer.appendChild(ul);
 
     const apiKey = 'b9b25782075944c282a534210d4027eb';
     let url = `https://newsapi.org/v2/top-headlines?apiKey=${apiKey}`;
@@ -167,4 +195,22 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!text) return '';
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
+
+  // Function to clear the articles and images but keep the <h2> and button
+  function closeSection(sectionId) {
+    const sectionElement = document.getElementById(sectionId);
+    
+    // Clear the articles (ul) in #section-articles
+    const ul = document.getElementById('section-articles').querySelector('ul');
+    if (ul) {
+      ul.innerHTML = ''; // Clear the articles
+    }
+
+    // Clear the images (photo-rotation)
+    const photoRotation = document.getElementById('photo-rotation');
+    if (photoRotation) {
+      photoRotation.innerHTML = ''; // Clear images
+    }
+  }
 });
+
