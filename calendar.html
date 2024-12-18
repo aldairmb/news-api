@@ -1,117 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Date Range, Category, and Sort Filter</title>
-    <!-- Include Flatpickr CSS from CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="styles/nav.css" rel="stylesheet" >
+  <link href="styles/fonts.css" rel="stylesheet" >
+  <link href="styles/general.css" rel="stylesheet" > 
+  <link href="styles/boxes.css" rel="stylesheet" >
+  <link href="styles/themes.css" rel="stylesheet" >
+  <script src="scripts/nav.js" defer ></script>
+  <script src="scripts/filters.js" defer></script>
+  <script src="scripts/boxes.js" defer></script>
+  <script src="scripts/themes.js" defer></script>
 </head>
 <body>
-    <h1>Select Date Range, Category, and Sort Order</h1>
+    <nav>
+        <!-- Hamburger Menu -->
+        <div class="hamburger" onclick="toggleMenu()">
+          &#9776;
+        </div>
+      
+        <!-- Side Menu -->
+        <div id="side-menu" class="side-menu">
+            <div class="hamburger" id="side-hamburger" onclick="toggleMenu()">
+                &#9776;
+            </div>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li class="dropdown"> 
 
-    <!-- Category Dropdown -->
-    <label for="category">Select Category:</label>
-    <select id="category">
-        <option value="">Select Category</option>
-        <option value="business">Business</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="general">General</option>
-        <option value="health">Health</option>
-        <option value="science">Science</option>
-        <option value="sports">Sports</option>
-        <option value="technology">Technology</option>
-    </select>
-    
-    <!-- Sort Order Dropdown -->
-    <label for="sortOrder">Sort by:</label>
-    <select id="sortOrder">
-        <option value="relevancy">Relevancy</option>
-        <option value="popularity">Popularity</option>
-        <option value="publishedAt">Published Date</option>
-    </select>
+             <!-- News Filter -->
+              <span>Filters</span>
+              <ul class="dropdown-content">
+                <form id="news-filters">
+                  <li class="dropdown">
+                  
+                  <!-- Category Filter -->
+                  <label for="section">Section:</label>
+                  <select id="section" name="section">
+                    <option value="">Select Section</option>
+                    <option value="s-1">Section 1</option>
+                    <option value="s-2">Section 2</option>
+                    <option value="s-3">Section 3</option>
+                    <option value="s-4">Section 4</option>
+                    <option value="s-5">Section 5</option>
+                    </select>
+                  </li>
 
-    <!-- Date Range Picker -->
-    <input type="text" id="dateRangePicker" placeholder="Select Date Range">
+                  <!-- Category Filter -->
+                  <label for="category">Category:</label>
+                  <select id="category" name="category">
+                    <option value="">Select Category</option>
+                    <option value="business">Business</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="general">General</option>
+                    <option value="health">Health</option>
+                    <option value="science">Science</option>
+                    <option value="sports">Sports</option>
+                    <option value="technology">Technology</option>
+                  </select>
+                  <br><br>
+      
+                  <!-- Source Filter -->
+                  <label for="source">Source:</label>
+                  <select id="source" name="source">
+                    <option value="">Select Source</option>
+                    <option value="bbc-news">BBC News</option>
+                    <option value="nbc-news">NBC News</option>
+                    <option value="fox-news">Fox News</option>
+                    <option value="time">Time</option>
+                    <option value="politico">Politico</option>
+                    <option value="associated-press">Associated Press</option>
+                    <option value="the-washington-post">The Washington Post</option>
+                    <option value="al-jazeera-english">Al Jazeera</option>
+                    <option value="bloomberg">Bloomberg</option>
+                    <option value="mashable">Mashable</option>
+                    <option value="the-verge">The Verge</option>
+                    <option value="espn">ESPN</option>
+                    <option value="fortune">Fortune</option>
+                  </select>
+                  <br><br>
+      
+                  <!-- Keyword Filter -->
+                  <label for="keyword-filter">Keyword Search (e.g., Musk, NBA):</label>
+                  <input type="text" id="keyword-filter" name="keyword-filter" placeholder="Enter a keyword">
+                  <br><br>
+      
+                  <!-- Submit Button -->
+                  <button type="submit">Get News</button>
+                </form>
+              </ul>
+            </li>
+            <br><br>
+            <li class="dropdown">
+              <ul class="dropdown-content">
+                <label for="theme">Themes:</label>
+                <select id="theme" name="theme">
+                  <option value="theme-1">Theme 1</option>
+                  <option value="theme-2">Theme 2</option>
+                  <option value="theme-3">Theme 3</option>
+                  <option value="theme-4">Theme 4</option>
+                  <option value="theme-5">Theme 5</option>
+                  <option value="theme-6">Theme 6</option>
+                  <option value="theme-7">Theme 7</option>
+                </select>
+              </ul>
+            </li>
+          </ul>
+        </div>
+    </nav>
 
-    <button id="filter">Filter Articles</button>
+  <header>
+    <h1>My News</h1>
+  </header>
 
-    <h2>Headlines:</h2>
-    <ul id="article-list"></ul>
+  <main>
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        // Initialize Flatpickr with range mode
-        flatpickr("#dateRangePicker", {
-            mode: "range",
-            dateFormat: "Y-m-d",  // Format the date (Year-Month-Day)
-            onChange: function(selectedDates) {
-                console.log("Selected Dates:", selectedDates);  // Log the selected date range
-            }
-        });
+    <!-- Article Content -->
+    <div class="box" class="article-content" class="closing-box" id="article-info"></div>
+  
+    <!-- Section Content -->
+    <div class="box" class="section-content" class="closing-box" id="photo-rotation"></div>
+    <div class="box" class="section-content" class="closing-box" class="edit-box" id="section-articles"></div>
+  
+<!-- Section Content -->
+<div class="box" class="section-content" class="closing-box" id="s-1">
+  <button class="close-btn">Close</button> <!-- Add close button -->
+</div>
+<div class="box" class="section-content" class="closing-box" id="s-2">
+  <button class="close-btn">Close</button>
+</div>
+<div class="box" class="section-content" class="closing-box" id="s-3">
+  <button class="close-btn">Close</button>
+</div>
+<div class="box" class="section-content" class="closing-box" id="s-4">
+  <button class="close-btn">Close</button>
+</div>
+<div class="box" class="section-content" class="closing-box" id="s-5">
+  <button class="close-btn">Close</button>
+</div>
 
-        // Handle button click to fetch the selected date range, category, sort order, and display articles
-        document.getElementById('filter').addEventListener('click', () => {
-            const selectedDates = document.querySelector('#dateRangePicker')._flatpickr.selectedDates;
-            const category = document.querySelector('#category').value;
-            const sortOrder = document.querySelector('#sortOrder').value;
-            console.log("Clicked Filter Button, Selected Dates:", selectedDates);  // Debug log
 
-            if (selectedDates.length === 2 && category && sortOrder) {
-                const startDate = selectedDates[0].toISOString().split('T')[0];  // Format to YYYY-MM-DD
-                const endDate = selectedDates[1].toISOString().split('T')[0];    // Format to YYYY-MM-DD
-
-                console.log(`Making API request from ${startDate} to ${endDate} in category ${category} with sort order ${sortOrder}`);  // Log the date range, category, and sort order being used
-
-                // Make API request to News API with the selected filters
-                fetch(`https://newsapi.org/v2/everything?q=${category}&from=${startDate}&to=${endDate}&pageSize=5&sortBy=${sortOrder}&apiKey=b9b25782075944c282a534210d4027eb`)
-                    .then(response => {
-                        console.log("API Response Status:", response.status);  // Check the response status
-                        if (!response.ok) {
-                            throw new Error('API request failed');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("API Response Data:", data);  // Log the full API response
-
-                        const articles = data.articles;
-                        if (articles && articles.length > 0) {
-                            const articleList = document.getElementById("article-list");
-
-                            // Clear any existing articles
-                            articleList.innerHTML = '';
-
-                            // Loop through the articles and display their headlines, sources, and dates
-                            articles.forEach(article => {
-                                const listItem = document.createElement("li");
-                                
-                                // Format the date to a more readable format (e.g., "Dec 15, 2024")
-                                const articleDate = new Date(article.publishedAt).toLocaleDateString("en-US", {
-                                    weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-                                });
-
-                                // Create a list item with headline, source, and date
-                                listItem.innerHTML = `
-                                    <strong>${article.title}</strong><br>
-                                    <em>Source: ${article.source.name}</em><br>
-                                    <em>Published on: ${articleDate}</em>
-                                `;
-
-                                articleList.appendChild(listItem);
-                            });
-                        } else {
-                            alert('No articles found for the selected filters');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching articles:', error);
-                        alert('Error fetching articles, please try again later.');
-                    });
-            } else {
-                alert('Please select both start and end dates, a category, and a sort order');
-            }
-        });
-    </script>
+  </main>
 </body>
 </html>

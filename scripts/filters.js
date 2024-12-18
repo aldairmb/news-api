@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   const savedSections = JSON.parse(localStorage.getItem('savedSections')) || {};
   const savedFilters = JSON.parse(localStorage.getItem('savedFilters')) || {};
+  const sectionArticles = document.getElementById('section-articles');
+  const photoRotation = document.getElementById('photo-rotation');
 
   // Restore saved sections and filters
   Object.keys(savedSections).forEach(sectionId => {
@@ -119,23 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Function to fetch articles for a section
   function fetchArticlesForSection(sectionId, filters) {
     const { category, source, keyword } = filters || {};
-    const sectionElement = document.getElementById(sectionId);
 
-    // Clear previous articles from #section-articles
-    const articleContainer = document.getElementById('section-articles');
-    articleContainer.innerHTML = ''; // Clear previous articles
+    // Scroll to the top of the page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Clear images (photo rotation)
-    const photoRotation = document.getElementById('photo-rotation');
-    if (photoRotation) {
-      photoRotation.innerHTML = ''; // Clear images
-    }
-
-    // Create an articles list
-    const ul = document.createElement('ul');
-    ul.id = 'articles-list';
-    ul.textContent = 'Loading articles...';
-    articleContainer.appendChild(ul);
+    // Clear previous articles and images
+    sectionArticles.innerHTML = '';
+    photoRotation.innerHTML = '';
 
     const apiKey = 'b9b25782075944c282a534210d4027eb';
     let url = `https://newsapi.org/v2/top-headlines?apiKey=${apiKey}`;
@@ -146,62 +138,66 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        ul.innerHTML = ''; // Clear loading text
-        const photoRotation = document.getElementById('photo-rotation');
-        photoRotation.innerHTML = ''; // Clear previous images
-
         if (data.status === 'ok' && data.articles.length > 0) {
-          data.articles.forEach(article => {
+          const filteredArticles = data.articles.filter(article => !article.title.includes('[Removed]'));
+          filteredArticles.forEach(article => {
             const li = document.createElement('li');
-
-            let author = article.author || 'Unknown';
-            let sourceName = article.source.name;
-
-            // If the source is "Google News", remove "Google News" from the source and set the author to the original source
-            if (sourceName === 'Google News') {
-              author = 'Unknown';  // Set author to "Unknown"
-              sourceName = article.author || 'Unknown'; // Set the original author as the source
-            }
-
             li.innerHTML = `
               <h3>${article.title}</h3>
-              <p><strong>Author:</strong> ${author}</p>
+              <p><strong>Author:</strong> ${article.author || 'Unknown'}</p>
               <p><strong>Published At:</strong> ${new Date(article.publishedAt).toLocaleDateString()} ${new Date(article.publishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-              <p><strong>Source:</strong> ${sourceName}</p>
+              <p><strong>Source:</strong> ${article.source.name}</p>
               <a href="${article.url}" target="_blank">Read more</a>
             `;
-            ul.appendChild(li);
+            sectionArticles.appendChild(li);
 
-            // Add image URL to the photo-rotation div
+            // Add image URL and headline to the photo-rotation div
             if (article.urlToImage) {
               const imgDiv = document.createElement('div');
               imgDiv.classList.add('photo-item');
-              imgDiv.innerHTML = `<img src="${article.urlToImage}" alt="Image" style="max-width: 100%; height: auto;">`;
+              imgDiv.innerHTML = `
+                <img src="${article.urlToImage}" alt="Image" style="max-width: 100%; height: auto;">
+                <p>${article.title}</p>
+              `;
               photoRotation.appendChild(imgDiv);
             }
           });
+          rotateImages();
         } else {
-          ul.innerHTML = '<li>No articles found for the selected filters.</li>';
+          sectionArticles.innerHTML = '<li>No articles found for the selected filters.</li>';
         }
       })
       .catch(error => {
         console.error('Error fetching articles:', error);
-        ul.innerHTML = '<li>There was an error fetching the articles. Please try again later.</li>';
+        sectionArticles.innerHTML = '<li>There was an error fetching the articles. Please try again later.</li>';
       });
   }
 
-  // Helper function to capitalize the first letter
-  function capitalizeFirstLetter(text) {
-    if (!text) return '';
-    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  // Function to rotate images (show each image for 4 seconds)
+  function rotateImages() {
+    const images = photoRotation.querySelectorAll('.photo-item');
+    let currentIndex = 0;
+    
+    const showImage = (index) => {
+      images.forEach((image, i) => {
+        image.style.display = i === index ? 'block' : 'none';
+      });
+    };
+
+    showImage(currentIndex);
+
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % images.length;
+      showImage(currentIndex);
+    }, 4000); // Change image every 4 seconds
   }
 
-  // Function to clear the articles and images but keep the <h2> and button
+  // Function to close a section
   function closeSection(sectionId) {
     const sectionElement = document.getElementById(sectionId);
     
-    // Clear the articles (ul) in #section-articles
-    const ul = document.getElementById('section-articles').querySelector('ul');
+    // Clear the articles (ul)
+    const ul = sectionElement.querySelector('ul');
     if (ul) {
       ul.innerHTML = ''; // Clear the articles
     }
@@ -211,6 +207,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (photoRotation) {
       photoRotation.innerHTML = ''; // Clear images
     }
+  }
+
+  // Helper function to capitalize the first letter
+  function capitalizeFirstLetter(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
 });
 
