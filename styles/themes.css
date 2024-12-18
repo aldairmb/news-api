@@ -79,3 +79,8 @@
   h1 {
     color: var(--text-color);
   }
+
+  .unopened-section {
+    opacity: 50%;
+  }
+  
